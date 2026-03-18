@@ -21,6 +21,16 @@ namespace litex
             return Vector3(x * value, y * value, z * value);
         }
 
+        Vector3 operator+(const Vector3 &v)
+        {
+            return Vector3(x + v.x, y + v.y, z + v.z);
+        }
+
+        Vector3 operator-(const Vector3 &v)
+        {
+            return Vector3(x - v.x, y - v.y, z - v.z);
+        }
+
         void invert()
         {
             x = -x;
@@ -45,6 +55,11 @@ namespace litex
             {
                 (*this) = (*this) * (((real)1) / l);
             }
+        }
+
+        bool equals(const Vector3 &otherVec)
+        {
+            return (x == otherVec.x) && (y == otherVec.y) && (z == otherVec.z);
         }
     };
 }
