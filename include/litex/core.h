@@ -55,6 +55,15 @@ namespace litex
             z += v.z;
         }
 
+        /**
+         * Updates this vector to be the vector product of its current
+         * value and the given vector.
+         */
+        void operator%=(const Vector3 &vector)
+        {
+            *this = cross(vector);
+        }
+
         /** Adds to this the vector scaled by the given value. */
         void addScaledVector(const Vector3 &vector, real scale)
         {
@@ -133,6 +142,26 @@ namespace litex
                 return true;
             }
             return false;
+        }
+
+        /**
+         * Calculates and returns the dot product of this vector
+         * with the given vector. this * vector
+         */
+        real dot(const Vector3 &vector) const
+        {
+            return x * vector.x + y * vector.y + z * vector.z;
+        }
+
+        /**
+         * Calculates and returns the cross product of this vector
+         * with the given vector. this x vector
+         */
+        Vector3 cross(const Vector3 &vector) const
+        {
+            return Vector3(y * vector.z - z * vector.y,
+                           z * vector.x - x * vector.z,
+                           x * vector.y - y * vector.x);
         }
     };
 }
