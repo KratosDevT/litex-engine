@@ -21,12 +21,12 @@ namespace litex
             return Vector3(x * value, y * value, z * value);
         }
 
-        Vector3 operator+(const Vector3 &v)
+        Vector3 operator+(const Vector3 &v) const
         {
             return Vector3(x + v.x, y + v.y, z + v.z);
         }
 
-        Vector3 operator-(const Vector3 &v)
+        Vector3 operator-(const Vector3 &v) const
         {
             return Vector3(x - v.x, y - v.y, z - v.z);
         }
@@ -45,6 +45,33 @@ namespace litex
             x -= v.x;
             y -= v.y;
             z -= v.z;
+        }
+
+        /** Adds the given vector to this. */
+        void operator-=(const Vector3 &v)
+        {
+            x += v.x;
+            y += v.y;
+            z += v.z;
+        }
+
+        /** Adds to this the vector scaled by the given value. */
+        void addScaledVector(const Vector3 &vector, real scale)
+        {
+            x += vector.x * scale;
+            y += vector.y * scale;
+            z += vector.z * scale;
+        }
+
+        /**
+         * Performs a component-wise product with the given vector and
+         * sets this vector to its result.
+         */
+        void componentProductUpdate(const Vector3 &vector)
+        {
+            x *= vector.x;
+            y *= vector.y;
+            z *= vector.z;
         }
 
         /** Invert the coordinates of this vector. v -> -v */
@@ -73,23 +100,36 @@ namespace litex
             real l = magnitude();
             if (l > 0)
             {
-                (*this) = (*this) * (((real)1) / l); // -> (this vector3) / (your magnitude)
+                (*this) = (*this) * (static_cast<real>(1) / l); // -> (this vector3) / (your magnitude)
             }
         }
 
-        bool equals(const Vector3 &otherVec)
+        /** Reset this vector into a zero vector. */
+        void resetToZero()
         {
-            return (x == otherVec.x) && (y == otherVec.y) && (z == otherVec.z);
+            x = 0;
+            y = 0;
+            z = 0;
         }
 
-        /** Verify if the vector is Zero and correct eventually error accumulation */
-        bool equalsZero()
+        bool checkRealNearEpsilon(real r) const
         {
-            if (x < __DBL_EPSILON__ && y < __DBL_EPSILON__ && z < __DBL_EPSILON__)
+            return std::abs(r) < REAL_EPSILON;
+        }
+
+        bool equals(const Vector3 &otherVec) const
+        {
+            real xDiff = x - otherVec.x;
+            real yDiff = y - otherVec.y;
+            real zDiff = z - otherVec.z;
+            return checkRealNearEpsilon(xDiff) && checkRealNearEpsilon(yDiff) && checkRealNearEpsilon(zDiff);
+        }
+
+        /** Verify if the vector is near Zero, check with REAL_EPSILON */
+        bool equalsZero() const
+        {
+            if (checkRealNearEpsilon(x) && checkRealNearEpsilon(y) && checkRealNearEpsilon(z))
             {
-                x = 0;
-                y = 0;
-                z = 0;
                 return true;
             }
             return false;
