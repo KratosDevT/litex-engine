@@ -48,7 +48,7 @@ namespace litex
         }
 
         /** Adds the given vector to this. */
-        void operator-=(const Vector3 &v)
+        void operator+=(const Vector3 &v)
         {
             x += v.x;
             y += v.y;

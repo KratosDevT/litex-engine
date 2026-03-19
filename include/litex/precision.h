@@ -3,8 +3,6 @@
 namespace litex
 {
 
-    static constexpr real REAL_EPSILON = static_cast<real>(1e-5);
-
 /** Defines the precision of the square root operator. */
 #define real_sqrt sqrtf
 
@@ -15,4 +13,5 @@ namespace litex
      */
     typedef float real;
 
+    static constexpr real REAL_EPSILON = static_cast<real>(1e-5);
 }
