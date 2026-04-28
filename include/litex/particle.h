@@ -10,8 +10,6 @@ namespace litex
     class Particle
     {
     public:
-
-    
         /**
          * Holds the linear position of the particle in
          * world space.
@@ -47,5 +45,16 @@ namespace litex
          * (completely unstable in numerical simulation).
          */
         real inverseMass;
+
+
+        Vector3 forceAccum;
+
+        /**
+         * Integrates the particle forward in time by the given amount.
+         * This function uses a Newton-Euler integration method, which is a
+         * linear approximation of the correct integral. For this reason it
+         * may be inaccurate in some cases.
+         */
+        void integrate(real duration);
     };
 }

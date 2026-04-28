@@ -2,12 +2,14 @@
 #include <cmath>
 #include <string>
 #include "litex/core.h"
+#include "renderer/renderer.h"
 
 // --------------------------------------------------------
 // Test runner minimale
 // --------------------------------------------------------
 static int g_testsFailed = 0;
 static int g_testsPassed = 0;
+
 void printTab()
 {
     std::cout << "    ";
@@ -173,8 +175,9 @@ void test_overloadOperators()
 // --------------------------------------------------------
 // mainContent: aggiungi qui ogni nuovo test_*
 // --------------------------------------------------------
-void mainContent()
+bool ExecuteInitialTest()
 {
+    std::cout << "************TEST SUITE****************\n\n";
     test_defaultConstructor();
     test_paramConstructor();
     test_scalarMultiply();
@@ -185,16 +188,42 @@ void mainContent()
     test_normalizeZeroVector();
     test_sumVectors();
     test_overloadOperators();
-}
-
-int main()
-{
-    std::cout << "************TEST SUITE****************\n\n";
-    mainContent();
     std::cout << "\n";
     std::cout << "Passed: " << g_testsPassed << "\n";
     std::cout << "Failed: " << g_testsFailed << "\n";
     std::cout << "\n****************************\n";
 
     return g_testsFailed > 0 ? 1 : 0; // exit code non-zero se ci sono failure
+}
+
+int main()
+{
+    if (ExecuteInitialTest())
+    {
+        return 1;
+    }
+
+    litex::Renderer rend = litex::Renderer("Litex Engine", 800, 600, SDL_WINDOW_RESIZABLE);
+
+    bool running = true;
+    SDL_Event event;
+
+    while (running)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_EVENT_QUIT)
+            {
+                running = false;
+            }
+        }
+        rend.beginFrame(litex::Color::green());
+
+        //...
+        //...
+
+        rend.endFrame();
+    }
+
+    return 0;
 }
