@@ -1,61 +1,81 @@
-#include "renderer/renderer.h"
-#include <iostream>
+#include "sdl/renderer.h"
 
-litex::Renderer::Renderer(const std::string &title, int width, int height, SDL_WindowFlags windowFlag)
-    : w(width), h(height)
+namespace litex
 {
+
+std::expected<Renderer, std::string> Renderer::create(const std::string &title, int width, int height, SDL_WindowFlags windowFlag)
+{
+    Renderer r;
+    r.w = width;
+    r.h = height;
+
     if (!SDL_Init(SDL_INIT_VIDEO))
-    {
-        std::cout << "SDL_Init error: " << SDL_GetError() << std::endl;
-        return;
-    }
+        return std::unexpected(std::string("SDL_Init error: ") + SDL_GetError());
 
     if (!TTF_Init())
-    {
-        std::cout << "TTF_Init error: " << SDL_GetError() << std::endl;
-        return;
-    }
+        return std::unexpected(std::string("TTF_Init error: ") + SDL_GetError());
 
-    window = SDL_CreateWindow(title.c_str(), width, height, windowFlag);
-    if (!window)
-    {
-        std::cout << "SDL_CreateWindow error: " << SDL_GetError() << std::endl;
-        return;
-    }
+    r.window = SDL_CreateWindow(title.c_str(), width, height, windowFlag);
+    if (!r.window)
+        return std::unexpected(std::string("SDL_CreateWindow error: ") + SDL_GetError());
 
-    renderer = SDL_CreateRenderer(window, nullptr);
-    if (!renderer)
-    {
-        std::cout << "SDL_CreateRenderer error: " << SDL_GetError() << std::endl;
-        return;
-    }
+    r.renderer = SDL_CreateRenderer(r.window, nullptr);
+    if (!r.renderer)
+        return std::unexpected(std::string("SDL_CreateRenderer error: ") + SDL_GetError());
 
-    font = TTF_OpenFont("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24);
-    if (!font)
-    {
-        std::cout << "Font error: " << SDL_GetError() << std::endl;
-        return;
-    }
+    std::string fontPath = std::string(SDL_GetBasePath()) + "assets/fonts/DejaVuSans.ttf";
+    r.font = TTF_OpenFont(fontPath.c_str(), 24);
+    if (!r.font)
+        return std::unexpected(std::string("Font error: ") + SDL_GetError());
 
-    SDL_StartTextInput(window);
-    SDL_SetRenderVSync(renderer, 1);
+    SDL_StartTextInput(r.window);
+    SDL_SetRenderVSync(r.renderer, 1);
+
+    return r;
 }
 
-litex::Renderer::~Renderer()
+Renderer::Renderer(Renderer &&other) noexcept
+    : window(other.window), renderer(other.renderer), font(other.font), w(other.w), h(other.h)
+{
+    other.window = nullptr;
+    other.renderer = nullptr;
+    other.font = nullptr;
+}
+
+Renderer &Renderer::operator=(Renderer &&other) noexcept
+{
+    if (this != &other)
+    {
+        cleanup();
+        window = other.window;
+        renderer = other.renderer;
+        font = other.font;
+        w = other.w;
+        h = other.h;
+        other.window = nullptr;
+        other.renderer = nullptr;
+        other.font = nullptr;
+    }
+    return *this;
+}
+
+Renderer::~Renderer()
 {
     cleanup();
 }
 
-void litex::Renderer::cleanup() noexcept
+void Renderer::cleanup() noexcept
 {
+    if (!window && !renderer && !font)
+        return;
+
     if (window)
-    {
         SDL_StopTextInput(window);
-    }
 
     if (font)
     {
         TTF_CloseFont(font);
+        font = nullptr;
         TTF_Quit();
     }
 
@@ -74,13 +94,15 @@ void litex::Renderer::cleanup() noexcept
     SDL_Quit();
 }
 
-void litex::Renderer::beginFrame(litex::Color bg)
+void Renderer::beginFrame(Color bg)
 {
     SDL_SetRenderDrawColor(renderer, bg.r, bg.g, bg.b, bg.a);
     SDL_RenderClear(renderer);
 }
 
-void litex::Renderer::endFrame()
+void Renderer::endFrame()
 {
     SDL_RenderPresent(renderer);
+}
+
 }

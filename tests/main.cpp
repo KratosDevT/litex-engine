@@ -2,39 +2,22 @@
 #include <cmath>
 #include <string>
 #include "litex/core.h"
-#include "renderer/renderer.h"
 
-// --------------------------------------------------------
-// Test runner minimale
-// --------------------------------------------------------
 static int g_testsFailed = 0;
 static int g_testsPassed = 0;
 
-void printTab()
-{
-    std::cout << "    ";
-}
-
-void printNewLine()
-{
-    std::cout << std::endl;
-}
+void printTab() { std::cout << "    "; }
+void printNewLine() { std::cout << "\n"; }
 
 void print(const litex::Vector3 &v)
 {
     std::cout << "[" << v.x << ", " << v.y << ", " << v.z << "]";
 }
 
-void printLabel(const std::string &label)
-{
-    std::cout << label << " ";
-}
-
 void printVec(const std::string &label, const litex::Vector3 &v)
 {
     printTab();
-    printLabel("Vector3");
-    printLabel(label);
+    std::cout << "Vector3 " << label << " ";
     print(v);
     printNewLine();
 }
@@ -59,9 +42,6 @@ bool nearlyEqual(litex::real a, litex::real b, litex::real eps = 1e-5f)
     return std::abs(a - b) < eps;
 }
 
-// --------------------------------------------------------
-// Singoli test — ognuno è isolato, aggiungine quanti vuoi
-// --------------------------------------------------------
 void test_defaultConstructor()
 {
     std::cout << "[Default constructor]\n";
@@ -105,7 +85,7 @@ void test_invert()
 void test_squareMagnitude()
 {
     std::cout << "[Square magnitude]\n";
-    litex::Vector3 v(1.0f, 2.0f, 2.0f); // 1+4+4 = 9
+    litex::Vector3 v(1.0f, 2.0f, 2.0f);
     check(nearlyEqual(v.squareMagnitude(), 9.0f), "squareMagnitude == 9");
     printNewLine();
 }
@@ -113,7 +93,7 @@ void test_squareMagnitude()
 void test_magnitude()
 {
     std::cout << "[Magnitude]\n";
-    litex::Vector3 v(1.0f, 2.0f, 2.0f); // sqrt(9) = 3
+    litex::Vector3 v(1.0f, 2.0f, 2.0f);
     check(nearlyEqual(v.magnitude(), 3.0f), "magnitude == 3");
     printNewLine();
 }
@@ -121,7 +101,7 @@ void test_magnitude()
 void test_normalize()
 {
     std::cout << "[Normalize]\n";
-    litex::Vector3 v(0.0f, 3.0f, 4.0f); // |v| = 5
+    litex::Vector3 v(0.0f, 3.0f, 4.0f);
     v.normalize();
     check(nearlyEqual(v.magnitude(), 1.0f), "magnitude == 1 after normalize");
     printNewLine();
@@ -131,7 +111,7 @@ void test_normalizeZeroVector()
 {
     std::cout << "[Normalize zero vector is safe]\n";
     litex::Vector3 v(0.0f, 0.0f, 0.0f);
-    v.normalize(); // non deve crashare
+    v.normalize();
     check(v.x == 0.0f && v.y == 0.0f && v.z == 0.0f, "zero vector unchanged after normalize");
     printNewLine();
 }
@@ -168,14 +148,10 @@ void test_overloadOperators()
     printVec("v3", v3);
     v3 -= v3;
     check(v3.equalsZero(), "test overload -= ok");
-
     printNewLine();
 }
 
-// --------------------------------------------------------
-// mainContent: aggiungi qui ogni nuovo test_*
-// --------------------------------------------------------
-bool ExecuteInitialTest()
+int main()
 {
     std::cout << "************TEST SUITE****************\n\n";
     test_defaultConstructor();
@@ -188,42 +164,9 @@ bool ExecuteInitialTest()
     test_normalizeZeroVector();
     test_sumVectors();
     test_overloadOperators();
-    std::cout << "\n";
-    std::cout << "Passed: " << g_testsPassed << "\n";
+    std::cout << "\nPassed: " << g_testsPassed << "\n";
     std::cout << "Failed: " << g_testsFailed << "\n";
-    std::cout << "\n****************************\n";
+    std::cout << "****************************\n";
 
-    return g_testsFailed > 0 ? 1 : 0; // exit code non-zero se ci sono failure
-}
-
-int main()
-{
-    if (ExecuteInitialTest())
-    {
-        return 1;
-    }
-
-    litex::Renderer rend = litex::Renderer("Litex Engine", 800, 600, SDL_WINDOW_RESIZABLE);
-
-    bool running = true;
-    SDL_Event event;
-
-    while (running)
-    {
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_EVENT_QUIT)
-            {
-                running = false;
-            }
-        }
-        rend.beginFrame(litex::Color::darkgray());
-
-        //...
-        //...
-
-        rend.endFrame();
-    }
-
-    return 0;
+    return g_testsFailed > 0 ? 1 : 0;
 }
