@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "particle.h"
+#include "litex/particle.h"
 
 namespace litex
 {

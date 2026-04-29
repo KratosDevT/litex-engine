@@ -19,6 +19,7 @@ namespace litex
         static constexpr Color green() { return {50, 200, 50, 255}; }
         static constexpr Color blue() { return {50, 120, 220, 255}; }
         static constexpr Color yellow() { return {240, 200, 40, 255}; }
+        static constexpr Color darkgray() { return {35, 35, 35, 255}; }
     };
 
     // Gestisce finestra SDL3

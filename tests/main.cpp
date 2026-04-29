@@ -217,7 +217,7 @@ int main()
                 running = false;
             }
         }
-        rend.beginFrame(litex::Color::green());
+        rend.beginFrame(litex::Color::darkgray());
 
         //...
         //...
