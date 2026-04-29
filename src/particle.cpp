@@ -1,23 +1,23 @@
-#include <assert.h>
 #include "litex/particle.h"
+#include <assert.h>
 
 namespace litex
 {
-    void Particle::integrate(real duration)
-    {
-        assert(duration > 0.0);
+	void Particle::integrate(real duration)
+	{
+		assert(duration > 0.0);
 
-        // Update linear position.
-        position.addScaledVector(velocity, duration);
+		// Update linear position.
+		position.addScaledVector(velocity, duration);
 
-        // Work out the acceleration from the force.
-        Vector3 resultingAcc = acceleration;
-        resultingAcc.addScaledVector(forceAccum, inverseMass);
+		// Work out the acceleration from the force.
+		Vector3 resultingAcc = acceleration;
+		resultingAcc.addScaledVector(forceAccum, inverseMass);
 
-        // Update linear velocity from the acceleration.
-        velocity.addScaledVector(resultingAcc, duration);
+		// Update linear velocity from the acceleration.
+		velocity.addScaledVector(resultingAcc, duration);
 
-        // Impose drag.
-        velocity *= real_pow(damping, duration);
-    }
-}
+		// Impose drag.
+		velocity *= real_pow(damping, duration);
+	}
+} // namespace litex

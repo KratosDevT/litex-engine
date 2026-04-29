@@ -3,15 +3,15 @@
 
 int main()
 {
-    auto result = litex::Engine::create("Litex Engine", 800, 600);
-    if (!result)
-    {
-        std::cerr << "Engine error: " << result.error() << "\n";
-        return 1;
-    }
+	auto result = litex::Engine::create("Litex Engine", 800, 600);
+	if (!result)
+	{
+		std::cerr << "Engine error: " << result.error() << "\n";
+		return 1;
+	}
 
-    litex::Engine engine = std::move(*result);
-    engine.run();
+	litex::Engine engine = std::move(*result);
+	engine.run();
 
-    return 0;
+	return 0;
 }
