@@ -19,5 +19,7 @@ namespace litex
 
 		// Impose drag.
 		velocity *= real_pow(damping, duration);
+
+		forceAccum.resetToZero();
 	}
 } // namespace litex

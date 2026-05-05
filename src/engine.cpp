@@ -38,7 +38,7 @@ namespace litex
 					onEvent(event);
 			}
 
-			if (onUpdate)
+			if (dt > 0.0f && onUpdate)
 				onUpdate(dt);
 
 			renderer_.beginFrame(Color::darkgray());

@@ -1,4 +1,5 @@
 #include "sdl/renderer.h"
+#include <cmath>
 
 namespace litex
 {
@@ -98,6 +99,18 @@ namespace litex
 		}
 
 		SDL_Quit();
+	}
+
+	void Renderer::drawFilledCircle(int cx, int cy, int radius, Color color)
+	{
+		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+		for (int dy = -radius; dy <= radius; dy++)
+		{
+			int dx = static_cast<int>(std::sqrt(radius * radius - dy * dy));
+			SDL_FRect row = { static_cast<float>(cx - dx), static_cast<float>(cy + dy),
+			                  static_cast<float>(2 * dx), 1.0f };
+			SDL_RenderFillRect(renderer, &row);
+		}
 	}
 
 	void Renderer::beginFrame(Color bg)

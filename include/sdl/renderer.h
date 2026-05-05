@@ -41,6 +41,8 @@ namespace litex
 		void beginFrame(Color background = Color::black());
 		void endFrame();
 
+		void drawFilledCircle(int cx, int cy, int radius, Color color);
+
 		int width() const { return w; }
 		int height() const { return h; }
 
