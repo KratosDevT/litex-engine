@@ -1,4 +1,4 @@
-#include "litex/particle.h"
+#include "litex/particle_world.h"
 #include "sdl/engine.h"
 #include <iostream>
 
@@ -22,10 +22,13 @@ int main()
 	particle.damping = 1.0f;
 	particle.inverseMass = 1.0f;
 
+	litex::ParticleWorld world;
+	world.add(&particle);
+
 	engine.setOnUpdate(
 	    [&](litex::real dt)
 	    {
-		    particle.integrate(dt);
+		    world.runPhysics(dt);
 
 		    float bottom =
 		        static_cast<float>(engine.renderer().height() - radius);
@@ -39,9 +42,12 @@ int main()
 	engine.setOnRender(
 	    [&](litex::Renderer& r)
 	    {
-		    r.drawFilledCircle(static_cast<int>(particle.position.x),
-		                       static_cast<int>(particle.position.y), radius,
-		                       litex::Color::white());
+		    for (const litex::Particle* p : world.particles())
+		    {
+			    r.drawFilledCircle(static_cast<int>(p->position.x),
+			                       static_cast<int>(p->position.y), radius,
+			                       litex::Color::white());
+		    }
 	    });
 
 	engine.run();

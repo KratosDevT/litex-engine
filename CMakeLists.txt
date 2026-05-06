@@ -11,6 +11,7 @@ find_package(SDL3_ttf REQUIRED CONFIG)
 add_library(litex STATIC
     src/litex.cpp
     src/particle.cpp
+    src/particle_world.cpp
 )
 target_include_directories(litex PUBLIC include)
 
